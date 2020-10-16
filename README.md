@@ -8,3 +8,8 @@ Upon logging in, the user will be prompted to record their mood and emotions at 
 
 It also allows users to add a daily journal entry and send a report to their therapist.
 
+## Wireframes ##
+Login page
+![login page](docs/Login_page_wireframe.png)
+Sign up page
+![Sign up page](docs/Sign_up_page_wireframe.png)
