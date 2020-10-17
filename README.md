@@ -23,7 +23,7 @@ How are you feeling?
 ![How are you feeling?](docs/How_are_you_feeling_wireframe.png)
 
 Emotions List
-
+https://material-ui.com/components/slider/#discrete-sliders
 ![Emotions List](docs/Emotions_list_wireframe.png)
 
 Actions
@@ -31,6 +31,7 @@ Actions
 ![Actions](docs/Actions_wireframe.png)
 
 My Journal
+https://material-ui.com/components/pickers/#datepickers
 
 ![My Journal](docs/Journal_wireframe.png)
 
