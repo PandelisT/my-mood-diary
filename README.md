@@ -49,4 +49,16 @@ Skills
 
 Calendar
 
-![Calendar](docs/Calendar_wireframe.png)
+![Calendar](docs/Calendar_wireframe.png).
+
+## Instructions 
+
+The instructions for Ubuntu 20:
+
+```sudo apt-get update```
+```git clone https://github.com/PandelisT/my-mood-diary.git```
+```apt-get install python3.8-venv```
+```python3.8 -m venv venv```
+```source venv/bin/activate```
+```python -m pip install --upgrade pip```
+```pip install -r requirements.txt```
