@@ -55,10 +55,16 @@ Calendar
 
 The instructions for Ubuntu 20:
 
-```sudo apt-get update```
-```git clone https://github.com/PandelisT/my-mood-diary.git```
-```apt-get install python3.8-venv```
-```python3.8 -m venv venv```
-```source venv/bin/activate```
-```python -m pip install --upgrade pip```
-```pip install -r requirements.txt```
+Update repositories on Ubuntu: ```sudo apt-get update```
+
+Clone GitHub repository: ```git clone https://github.com/PandelisT/my-mood-diary.git```
+
+Install python virtual environment: ```apt-get install python3.8-venv```
+
+Create virtual environment: ```python3.8 -m venv venv```
+
+Activate the virtual environment ```source venv/bin/activate```
+
+Install pip: ```python -m pip install --upgrade pip```
+
+Install modules from requirements.txt: ```pip install -r requirements.txt```
