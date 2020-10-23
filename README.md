@@ -18,6 +18,10 @@ Sign up page
 
 ![Sign up page](docs/Sign_up_page_wireframe.png)
 
+Profile page
+
+![Profile page](docs/Profile_wireframe.png)
+
 How are you feeling?
 
 ![How are you feeling?](docs/How_are_you_feeling_wireframe.png)
@@ -59,7 +63,7 @@ Update repositories on Ubuntu: `sudo apt-get update`
 
 Clone GitHub repository: `git clone https://github.com/PandelisT/my-mood-diary.git`
 
-Install python virtual environment: `apt-get install python3.8-venv`
+Install python virtual environment: `sudo apt-get install python3.8-venv`
 
 Create virtual environment: `python3.8 -m venv venv`
 
@@ -68,7 +72,3 @@ Activate the virtual environment `source venv/bin/activate`
 Install pip: `python -m pip install --upgrade pip`
 
 Install modules from requirements.txt: `pip install -r requirements.txt`
-
-### Ading a test
-
-###
