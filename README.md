@@ -10,7 +10,7 @@ It also allows users to add a daily journal entry and send a report to their the
 
 ## Wireframes
 
-Login page
+### Login page
 
 ![login page](docs/Login_page_wireframe.png)
 
