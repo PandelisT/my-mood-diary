@@ -8,6 +8,8 @@ Upon logging in, the user will be prompted to record their mood and emotions at 
 
 It also allows users to add a daily journal entry and send a report to their therapist.
 
+REST API end points can be found here: https://app.swaggerhub.com/apis/nerdypan/my-mood-diary/1.0.0 
+
 ## Wireframes
 
 ### Login page
@@ -54,6 +56,10 @@ Skills
 Calendar
 
 ![Calendar](docs/Calendar_wireframe.png).
+
+## Entity relationships
+
+![Database Entity Relationships](docs/my-mood-diary-entity-relationships_v1.png).
 
 ## Instructions
 
