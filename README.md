@@ -59,7 +59,7 @@ Calendar
 
 ## Entity relationships
 
-![Database Entity Relationships](docs/my-mood-diary-entity-relationships_v1.png).
+![Database Entity Relationships](docs/erd_v2.png).
 
 ## Instructions
 
