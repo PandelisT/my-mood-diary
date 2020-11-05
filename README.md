@@ -24,13 +24,11 @@ Profile page
 
 ![Profile page](docs/Profile_wireframe.png)
 
-How are you feeling?
+How are you feeling? and Emotions
 
-![How are you feeling?](docs/How_are_you_feeling_wireframe.png)
-
-Emotions List
+![How are you feeling?](docs/How_are_you_feeling_Emotions_wireframe.png)
 https://material-ui.com/components/slider/#discrete-sliders
-![Emotions List](docs/Emotions_list_wireframe.png)
+
 
 Actions
 
