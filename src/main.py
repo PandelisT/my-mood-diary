@@ -33,7 +33,7 @@ def book_show(id):
 @app.route("/journal", methods=["POST"])
 def journal_entry_create():
     #Create a journal entry
-    sql = "INSERT INTO journal (journal_entry) VALUES (%s);"
+    sql = "INSERT INTO journal (journal_entry, date) VALUES (%s, NOW());"
     cursor.execute(sql, (request.json["journal_entry"]))
     connection.commit()
 
@@ -59,5 +59,5 @@ def journal_entry_update(id):
 
     sql = "SELECT * FROM journal WHERE id = %s"
     cursor.execute(sql, (id,))
-    book = cursor.fetchone()
-    return jsonify(book)
+    journal_entry = cursor.fetchone()
+    return jsonify(journal_entrybook)
