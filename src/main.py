@@ -1,63 +1,20 @@
-from flask import Flask, request, jsonify, abort
+# Loading environment variables
+# from dotenv import load_dotenv
+# load_dotenv()
+
+# Flask application creation
+from flask import Flask
 app = Flask(__name__)
-import psycopg2
 
-connection = psycopg2.connect(
-    database="my_mood_diary",
-    user="postgres",
-    password="postgres",
-    host="localhost"
-)
+# Database connection
+from database import init_db
+db = init_db(app)
 
-cursor = connection.cursor()
+# Set up serialisation and deserialisation
+from flask_marshmallow import Marshmallow
+ma = Marshmallow(app)
 
-cursor.execute("create table if not exists journal (journal_id serial PRIMARY KEY, journal_entry varchar, date date);")
-connection.commit()
-
-@app.route("/journal", methods=["GET"])
-def get_journal_entries():
-    #Return all journal entries
-    sql = "SELECT * FROM journal"
-    cursor.execute(sql)
-    journal = cursor.fetchall()
-    return jsonify(journal)
-
-@app.route("/journal/<int:id>", methods=["GET"])
-def book_show(id):
-    #Return a single journal entry
-    sql = "SELECT * FROM journal WHERE id = %s;"
-    cursor.execute(sql, (id,))
-    journal_entry = cursor.fetchone()
-    return jsonify(journal_entry)
-
-@app.route("/journal", methods=["POST"])
-def journal_entry_create():
-    #Create a journal entry
-    sql = "INSERT INTO journal (journal_entry, date) VALUES (%s, NOW());"
-    cursor.execute(sql, (request.json["journal_entry"]))
-    connection.commit()
-
-@app.route("/journal/<int:id>", methods=["DELETE"])
-def journal_entry_delete(id):
-    sql = "SELECT * FROM journal WHERE id = %s;"
-    cursor.execute(sql, (id,))
-    journal_entry = cursor.fetchone()
-    
-    if journal_entry:
-        sql = "DELETE FROM journal WHERE id = %s;"
-        cursor.execute(sql, (id,))
-        connection.commit()
-
-    return jsonify(journal_entry)
-
-@app.route("/journal/<int:id>", methods=["PUT", "PATCH"])
-def journal_entry_update(id):
-    #Update a journal entry
-    sql = "UPDATE journal SET journal_entry = %s WHERE id = %s;"
-    cursor.execute(sql, (request.json["journal_entry"], id))
-    connection.commit()
-
-    sql = "SELECT * FROM journal WHERE id = %s"
-    cursor.execute(sql, (id,))
-    journal_entry = cursor.fetchone()
-    return jsonify(journal_entrybook)
+#Controller registration
+from controllers import registerable_controllers
+for controller in registerable_controllers:
+    app.register_blueprint(controller)
