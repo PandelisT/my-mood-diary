@@ -1,6 +1,7 @@
 from main import db
 from datetime import datetime 
 
+# create class and table name for tables in database
 class Journal(db.Model):
     __tablename__ = "journal"
 

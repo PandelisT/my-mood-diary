@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from schemas.JournalSchema import journals_schema, journal_schema
 journal = Blueprint("journal", __name__, url_prefix="/journal")
 
+# Journal routes 
 
 @journal.route("/", methods=["GET"])
 def get_journal_entries():
