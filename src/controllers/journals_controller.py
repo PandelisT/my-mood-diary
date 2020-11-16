@@ -2,11 +2,20 @@ from models.Journal import Journal
 from main import db
 from flask import Blueprint, request, jsonify
 from schemas.JournalSchema import journals_schema, journal_schema
+from flask_jwt_extended import jwt_required
+from services.auth_service import verify_user
+import boto3
+from main import db
+from pathlib import Path
+
+
 journal = Blueprint("journal", __name__, url_prefix="/journal")
 
 # Journal routes 
 
 @journal.route("/", methods=["GET"])
+@jwt_required
+@verify_user
 def get_journal_entries():
     #Return journal entries
     journals = Journal.query.all()
@@ -14,6 +23,8 @@ def get_journal_entries():
     return jsonify(serialised_data)
 
 @journal.route("/", methods=["POST"])
+@jwt_required
+@verify_user
 def journal_entry_create():
     #Create a journal entry
     journal_fields = journal_schema.load(request.json)
@@ -26,12 +37,16 @@ def journal_entry_create():
     return jsonify(journal_schema.dump(new_journal))
 
 @journal.route("/<int:id>", methods=["GET"])
+@jwt_required
+@verify_user
 def journal_entry_show(id):
     # Returns a single journal entry
     journal_entry = Journal.query.get(id)
     return jsonify(journal_schema.dump(journal_entry))
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])
+@jwt_required
+@verify_user
 def journal_entry_update(id):
     #Update a journal entry
     journal = Journal.query.filter_by(id=id)
@@ -41,6 +56,8 @@ def journal_entry_update(id):
     return jsonify(journal_schema.dump(journal[0]))
 
 @journal.route("/<int:id>", methods=["DELETE"])
+@jwt_required
+@verify_user
 def journal_entry_delete(id):
     # delete a journal entry
     journal = Journal.query.get(id)
