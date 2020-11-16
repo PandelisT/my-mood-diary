@@ -13,8 +13,8 @@ profile_images = Blueprint("profile_images",  __name__, url_prefix="/profile/<in
 @profile_images.route("/", methods=["POST"])
 @jwt_required
 @verify_user
-def profile_image_create(user_id, user=None):
-    profile = ProfileImage.query.filter_by(id=id, user_id=user.id).first()
+def profile_image_create(id):
+    profile = ProfileImage.query.filter_by(id=user_id).first()
 
     if not profile:
         return abort(401, description="Invalid user")
@@ -29,7 +29,7 @@ def profile_image_create(user_id, user=None):
 
     filename = f"{user_id}{Path(image.filename).suffix}"
     bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
-    key = f"book_images/{filename}"
+    key = f"profile_images/{filename}"
 
     bucket.upload_fileobj(image, key)
 
