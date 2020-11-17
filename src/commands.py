@@ -28,6 +28,7 @@ def seed_db():
         user.password = bcrypt.generate_password_hash("123456").decode("utf-8")
         db.session.add(user)
         users.append(user)
+        print(user)
 
     db.session.commit()
 
@@ -37,14 +38,13 @@ def seed_db():
         profile_image.user_id = random.choice(users).id
         db.session.add(profile_image)
 
-    db.session.commit()    
+    db.session.commit()   
 
     for i in range(1, 11):
         journal = Journal()
         journal.journal_entry = faker.catch_phrase()
         journal.user_id = random.choice(users).id
         db.session.add(journal)
-        print(f"{i} records created")
 
     db.session.commit()
     print("Tables seeded")

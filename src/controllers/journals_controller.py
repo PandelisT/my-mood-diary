@@ -7,7 +7,9 @@ from services.auth_service import verify_user
 import boto3
 from main import db
 from pathlib import Path
-
+from  flask_jwt_extended import get_jwt_identity
+from models.User import User
+from sqlalchemy.orm import joinedload
 
 journal = Blueprint("journal", __name__, url_prefix="/journal")
 
@@ -15,34 +17,61 @@ journal = Blueprint("journal", __name__, url_prefix="/journal")
 
 @journal.route("/", methods=["GET"])
 @jwt_required
-@verify_user
 def get_journal_entries():
     #Return journal entries
-    journals = Journal.query.all()
-    serialised_data = journals_schema.dump(journals)
-    return jsonify(serialised_data)
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
+
+    journals = Journal.query.filter_by(user_id=user.id).all()
+
+    # journals = Journal.query.options(joinedload("user")).all()
+    return jsonify(journals_schema.dump(journals))
 
 @journal.route("/", methods=["POST"])
 @jwt_required
-@verify_user
 def journal_entry_create():
     #Create a journal entry
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
+
     journal_fields = journal_schema.load(request.json)
     new_journal = Journal()
     new_journal.journal_entry = journal_fields["journal_entry"]
-
-    db.session.add(new_journal)
+    journal.users.append(new_journal)
+    # new_journal.user_id= user
     db.session.commit()
 
     return jsonify(journal_schema.dump(new_journal))
 
+    # #Create a new book
+    # book_fields = book_schema.load(request.json)
+
+    # new_book = Book()
+    # new_book.title = book_fields["title"]
+
+    # user.books.append(new_book)
+
+    # db.session.commit()
+    
+    # return jsonify(book_schema.dump(new_book))
+
 @journal.route("/<int:id>", methods=["GET"])
 @jwt_required
-@verify_user
+# @verify_user
 def journal_entry_show(id):
     # Returns a single journal entry
-    journal_entry = Journal.query.get(id)
-    return jsonify(journal_schema.dump(journal_entry))
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
+
+    # journal_entry = Journal.query.get(id)
+    journals = Journal.query.filter_by(id=id, user_id=user.id).first()
+    return jsonify(journal_schema.dump(journals))
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
