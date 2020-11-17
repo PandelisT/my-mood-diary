@@ -8,7 +8,7 @@ class User(db.Model):
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
     profile_image = db.relationship("ProfileImage", backref="user", lazy="dynamic")
-    journal = db.relationship("Journal", backref="users", lazy="dynamic")
+    journal_entries = db.relationship("Journal", backref="users", lazy="dynamic")
 
     def __repr__(self):
         return f"<User {self.email}>"

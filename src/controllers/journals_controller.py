@@ -24,9 +24,7 @@ def get_journal_entries():
     if not user:
         return abort(401, description="Invalid user")
 
-    journals = Journal.query.filter_by(user_id=user.id).all()
-
-    # journals = Journal.query.options(joinedload("user")).all()
+    journals = Journal.query.filter_by(user_id_fk=user.id).all()
     return jsonify(journals_schema.dump(journals))
 
 @journal.route("/", methods=["POST"])
@@ -41,23 +39,13 @@ def journal_entry_create():
     journal_fields = journal_schema.load(request.json)
     new_journal = Journal()
     new_journal.journal_entry = journal_fields["journal_entry"]
-    journal.users.append(new_journal)
-    # new_journal.user_id= user
+
+    user.journal_entries.append(new_journal)
+
+    db.session.add(new_journal)
     db.session.commit()
 
     return jsonify(journal_schema.dump(new_journal))
-
-    # #Create a new book
-    # book_fields = book_schema.load(request.json)
-
-    # new_book = Book()
-    # new_book.title = book_fields["title"]
-
-    # user.books.append(new_book)
-
-    # db.session.commit()
-    
-    # return jsonify(book_schema.dump(new_book))
 
 @journal.route("/<int:id>", methods=["GET"])
 @jwt_required
@@ -70,7 +58,7 @@ def journal_entry_show(id):
         return abort(401, description="Invalid user")
 
     # journal_entry = Journal.query.get(id)
-    journals = Journal.query.filter_by(id=id, user_id=user.id).first()
+    journals = Journal.query.filter_by(id=id, user_id_fk=user.id).first()
     return jsonify(journal_schema.dump(journals))
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])

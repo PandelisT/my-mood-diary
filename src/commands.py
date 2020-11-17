@@ -43,7 +43,7 @@ def seed_db():
     for i in range(1, 11):
         journal = Journal()
         journal.journal_entry = faker.catch_phrase()
-        journal.user_id = random.choice(users).id
+        journal.user_id_fk = random.choice(users).id
         db.session.add(journal)
 
     db.session.commit()
