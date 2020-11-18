@@ -11,7 +11,7 @@ from  flask_jwt_extended import get_jwt_identity
 from models.User import User
 from sqlalchemy.orm import joinedload
 from datetime import date, datetime
-from sqlalchemy import Date
+from sqlalchemy import Date, exc, extract, func, cast
 from sqlalchemy import create_engine, text
 from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 from sqlalchemy import inspect
@@ -89,9 +89,13 @@ def journal_entries_date(year, month, day):
 
     journal_list = []
     for entry in result_as_list:
-        journal_list.append(entry.journal_entry)
+        journal_list.append({ "id" : entry.id, "journal_entry" : entry.journal_entry} )
     
     return jsonify(journal_list)
+     
+    # result = Journal.query.filter(cast(Journal.journal_date, Date)==f'{year}-{month}-{day}').all()
+    # print(result)
+    # return jsonify(result)
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
@@ -116,11 +120,10 @@ def journal_entry_delete(id):
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
-
     journal = Journal.query.filter_by(id=id, user_id_fk=user.id)
+    print(journal)
     if not journal:
         return "deleted"
-
     db.session.delete(journal)
     db.session.commit()
 

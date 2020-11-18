@@ -46,26 +46,30 @@ def profile_image_create(user_id):
     
     return ("", 201)
 
-# @profile_images.route("/<int:id>", methods=["GET"])
-# @jwt_required
-# @verify_user
-# def profile_image_show(user_id, id):
-#     profile_image = ProfileImage.query.filter_by(id=id).first()
+@profile_images.route("/", methods=["GET"])
+@jwt_required
+def profile_image_show(user_id):
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
+    
+    profile_image = ProfileImage.query.filter_by(id=user_id).first()
 
-#     if not profile_image:
-#         return abort(401, description="Invalid profile image")
+    if not profile_image:
+        return abort(401, description="Invalid profile image")
 
-#     bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
-#     filename = profile_image.filename
-#     file_obj = bucket.Object(f"profile_images/{filename}").get()
+    bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
+    filename = profile_image.filename
+    file_obj = bucket.Object(f"profile_images/{filename}").get()
 
-#     print(file_obj)
+    print(file_obj)
 
-#     return Response(
-#         file_obj["Body"].read(),
-#         mimetype="image/*",
-#         headers={"Content-Disposition": "attachment;filename=image"}
-    # )
+    return Response(
+        file_obj["Body"].read(),
+        mimetype="image/*",
+        headers={"Content-Disposition": "attachment;filename=image"}
+    )
 
 # @profile_images.route("/<int:id>", methods=["DELETE"])
 # @jwt_required
