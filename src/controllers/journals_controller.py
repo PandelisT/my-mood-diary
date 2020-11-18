@@ -18,18 +18,28 @@ from sqlalchemy import inspect
 
 journal = Blueprint("journal", __name__, url_prefix="/journal")
 
-# Journal routes 
-
 @journal.route("/", methods=["GET"])
 @jwt_required
 def get_journal_entries():
-    #Return journal entries
+    # Return all journal entries for a user
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
     journals = Journal.query.filter_by(user_id_fk=user.id).all()
+    return jsonify(journals_schema.dump(journals))
+
+@journal.route("/recent", methods=["GET"])
+@jwt_required
+def get_recent_journal_entries():
+    # Returns most recent journal entries for a user
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
+
+    journals = Journal.query.filter_by(user_id_fk=user.id).order_by(Journal.journal_date.desc()).limit(3).all()
     return jsonify(journals_schema.dump(journals))
 
 @journal.route("/", methods=["POST"])
@@ -110,6 +120,7 @@ def journal_entry_delete(id):
     journal = Journal.query.filter_by(id=id, user_id_fk=user.id)
     if not journal:
         return "deleted"
+
     db.session.delete(journal)
     db.session.commit()
 
