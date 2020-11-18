@@ -73,26 +73,15 @@ def journal_entries_date(year, month, day):
     if not user:
         return abort(401, description="Invalid user")
 
-    # result = db.session.execute(f"SELECT * FROM  journal WHERE DATE(journal_date) = '{year}-{month}-{day}';" )
-    # print(jsonify(journal_schema.dump(result)))
-    sql_query = text("SELECT * FROM  journal WHERE DATE(journal_date) = '2020-11-17';")
-    result = connection.execute(sql_query)
+    sql_query = text(f"SELECT * FROM  journal WHERE DATE(journal_date) = '{year}-{month}-{day}' and user_id_fk='{user.id}';")
+    result = db.engine.execute(sql_query)
     result_as_list = result.fetchall()
 
-    for row in result_as_list:
-        print(row)
-
-    # journals = Journal.query.filter_by(user_id_fk=user.id).first()
-    # print(journals)
-    # journal_entries_date = journals.journal_date
-    # print(journal_entries_date)
-    # year = journal_entries_date.year
-    # month = journal_entries_date.month
-    # day = journal_entries_date.day
-    # print(year, month, day)
-
-    # journals = Journal.query.get(year=journal_entries_date.year, month=journal_entries_date.month, day=journal_entries_date.day).all()
-    return jsonify(journal_schema.dump(result))
+    journal_list = []
+    for entry in result_as_list:
+        journal_list.append(entry.journal_entry)
+    
+    return jsonify(journal_list)
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
