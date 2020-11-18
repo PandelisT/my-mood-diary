@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  description: This is an API for the project on GitHub https://github.com/PandelisT/my-mood-diary.
+  version: "1.0.0"
+  title: My Mood Diary API
+  contact:
+    email: pandeli@nerdypandy.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: My Journal
+    description: Routes available for "My Journal" page
+  - name: user
+    description: Routes for clients and psychologists
+paths:
+  /journal:
+    get:
+      tags:
+        - My Journal
+      summary: Searches for latest journal entries
+      responses:
+          '200':
+            description: Success
+      description: Search for a specific journal entry.
+    post:
+      tags:
+        - My Journal
+      summary: Adds a journal entry
+      responses:
+          '200':
+           description: Success
+      description: Adds a journal entry to the database
+
+  /journal/findByDate:
+    get:
+      tags:
+        - My Journal
+      summary: Finds journal entry by date
+      description: Multiple status values can be provided with comma separated strings
+      operationId: findJournalByDate
+      parameters:
+        - name: date
+          in: query
+          description: Dates that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - available
+                - pending
+                - sold
+              default: available
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Invalid status value
+  '/journal/{journalId}':
+    get:
+      tags:
+        - My Journal
+      summary: Finds journal entry by ID
+      description: Returns a single journal entry
+      operationId: getJournalById
+      parameters:
+        - name: journalId
+          in: path
+          description: ID of journal entry to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+    description: |
+      By passing in the appropriate options, you can search for
+      a specific journal entry.
+    put:
+      tags:
+        - My Journal
+      summary: Updates a journal entry by ID
+      description: Updates a single journal entry
+      operationId: updateJournalById
+      parameters:
+        - name: journalId
+          in: path
+          description: ID of journal entry to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+    delete:
+      tags:
+        - My Journal
+      summary: Deletes a single journal entry
+      operationId: deleteJournal
+      parameters:
+        - name: journalId
+          in: path
+          description: Journal entry id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Journal entry not found
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+  '/user/{username}':
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched. Use user1 for testing.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+      xml:
+        name: User
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/nerdypan/my-mood-diary/1.0.0
