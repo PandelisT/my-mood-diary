@@ -5,11 +5,10 @@ from marshmallow.validate import Length, Email
 class ClientSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Client
-        load_only = ["password"]
 
     # add validation for user input before it goes into the database
-    email = ma.String(required=True, validate=[Length(min=4), Email()])
-    password = ma.String(required=True, validate=Length(min=6))
+    # email = ma.String(required=True, validate=[Length(min=4), Email()])
+    # password = ma.String(required=True, validate=Length(min=6))
 
 
 client_schema = UserSchema()

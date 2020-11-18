@@ -15,6 +15,7 @@ def seed_db():
     from models.User import User
     from models.Journal import Journal
     from models.ProfileImage import ProfileImage
+    from models.Client import Client
     from main import bcrypt
     from faker import Faker
     import random
@@ -33,9 +34,20 @@ def seed_db():
     db.session.commit()
 
     for i in range(1,6):
+        client = Client()
+        client.username = f"username{i}"
+        client.fname = f"firstname{i}"
+        client.lname = f"lastname{i}"
+        db.session.add(client)
+        clients.append(client)
+        print(client)
+
+    db.session.commit()
+
+    for i in range(1,6):
         profile_image = ProfileImage()
         profile_image.filename = f"String for image {i}"
-        profile_image.user_id = random.choice(users).id
+        profile_image.client_id = random.choice(clients).id
         db.session.add(profile_image)
 
     db.session.commit()   
