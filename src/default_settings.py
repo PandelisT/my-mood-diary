@@ -1,19 +1,14 @@
 import os
-
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "duck"
-
     MAX_CONTENT_LENGTH = 1 * 1024 * 1024
-
 
     @property
     def AWS_ACCESS_KEY_ID(self):
         value = os.getenv('AWS_ACCESS_KEY_ID')
-
         if not value:
             raise ValueError("AWS_ACCESS_KEY_ID is not set")
-
         return value
     
     @property
@@ -22,7 +17,6 @@ class Config(object):
 
         if not value:
             raise ValueError("AWS_SECRET_ACCESS_KEY is not set")
-
         return value
     
     @property
@@ -42,10 +36,8 @@ class Config(object):
             raise ValueError("DB_URI is not set")
 
         return value
-
 class DevelopmentConfig(Config):
     DEBUG = True
-
 class ProductionConfig(Config):
     @property
     def JWT_SECRET_KEY(self):
@@ -55,7 +47,6 @@ class ProductionConfig(Config):
             raise ValueError("JWT Secret Key is not set")
         
         return value
-
 class TestingConfig(Config):
     TESTING = True
 
