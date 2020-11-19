@@ -4,6 +4,7 @@ from services.auth_service import verify_user
 from models.ProfileImage import ProfileImage
 from models.Journal import Journal
 from models.User import User
+from models.Client import Client
 from schemas.ProfileImageSchema import profile_image_schema
 import boto3
 from main import db
@@ -16,14 +17,9 @@ profile_images = Blueprint("profile_images",  __name__, url_prefix="/profile/<in
 @jwt_required
 def profile_image_create(user_id):
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
-    
-    profile = ProfileImage.query.first()
-
-    if not profile:
-        return abort(401, description="Invalid")
     
     if "image" not in request.files:
         return  abort(400, description="No Image")
@@ -41,7 +37,11 @@ def profile_image_create(user_id):
 
     new_image = ProfileImage()
     new_image.filename = filename
-    profile.profile_image = new_image
+    print(user_id)
+    print("************************")
+    new_image.client_id = user.id
+    print(user.__dict__)
+    user.profile_image.append(new_image)
     db.session.commit()
     
     return ("", 201)
@@ -58,10 +58,12 @@ def profile_image_show(user_id):
 
     if not profile_image:
         return abort(401, description="Invalid profile image")
-
     bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
+    
     filename = profile_image.filename
-    file_obj = bucket.Object(f"profile_images/{filename}").get()
+    print("****************************")
+    print(filename)
+    file_obj = bucket.Object(f"profile_images/<User test3@test.com>.JPG").get()
 
     print(file_obj)
 

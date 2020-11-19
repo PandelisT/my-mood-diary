@@ -1,4 +1,5 @@
 from models.Journal import Journal
+from models.Client import Client
 from main import db
 from flask import Blueprint, request, jsonify
 from schemas.JournalSchema import journals_schema, journal_schema
@@ -27,7 +28,7 @@ def get_journal_entries():
     if not user:
         return abort(401, description="Invalid user")
 
-    journals = Journal.query.filter_by(user_id_fk=user.id).all()
+    journals = Journal.query.filter_by(client_id_fk=user.id).all()
     return jsonify(journals_schema.dump(journals))
 
 @journal.route("/recent", methods=["GET"])
@@ -39,7 +40,7 @@ def get_recent_journal_entries():
     if not user:
         return abort(401, description="Invalid user")
 
-    journals = Journal.query.filter_by(user_id_fk=user.id).order_by(Journal.journal_date.desc()).limit(3).all()
+    journals = Journal.query.filter_by(client_id_fk=user.id).order_by(Journal.journal_date.desc()).limit(3).all()
     return jsonify(journals_schema.dump(journals))
 
 @journal.route("/", methods=["POST"])
@@ -47,7 +48,7 @@ def get_recent_journal_entries():
 def journal_entry_create():
     #Create a journal entry
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
@@ -71,7 +72,7 @@ def journal_entry_show(id):
     if not user:
         return abort(401, description="Invalid user")
 
-    journals = Journal.query.filter_by(id=id, user_id_fk=user.id).first()
+    journals = Journal.query.filter_by(id=id, client_id_fk=user.id).first()
     return jsonify(journal_schema.dump(journals))
 
 @journal.route("/<int:year>/<int:month>/<int:day>", methods=["GET"])
@@ -79,11 +80,11 @@ def journal_entry_show(id):
 def journal_entries_date(year, month, day):
     # Returns journal entries for a selected date
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
-    sql_query = text(f"SELECT * FROM  journal WHERE DATE(journal_date) = '{year}-{month}-{day}' and user_id_fk='{user.id}';")
+    sql_query = text(f"SELECT * FROM  journal WHERE DATE(journal_date) = '{year}-{month}-{day}' and client_id_fk='{user.id}';")
     result = db.engine.execute(sql_query)
     result_as_list = result.fetchall()
 
@@ -92,21 +93,17 @@ def journal_entries_date(year, month, day):
         journal_list.append({ "id" : entry.id, "journal_entry" : entry.journal_entry} )
     
     return jsonify(journal_list)
-     
-    # result = Journal.query.filter(cast(Journal.journal_date, Date)==f'{year}-{month}-{day}').all()
-    # print(result)
-    # return jsonify(result)
 
 @journal.route("/<int:id>", methods=["PUT", "PATCH"])
 @jwt_required
 def journal_entry_update(id):
-    #Update a journal entry
+    # Update a journal entry
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
-    journal = Journal.query.filter_by(id=id, user_id_fk=user.id)
+    journal = Journal.query.filter_by(id=id, client_id_fk=user.id)
     journal_fields = journal_schema.load(request.json)
     journal.update(journal_fields)
     db.session.commit()
@@ -117,10 +114,10 @@ def journal_entry_update(id):
 def journal_entry_delete(id):
     # delete a journal entry
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
-    journal = Journal.query.filter_by(id=id, user_id_fk=user.id)
+    journal = Journal.query.filter_by(id=id, client_id_fk=user.id).first()
     print(journal)
     if not journal:
         return "deleted"
