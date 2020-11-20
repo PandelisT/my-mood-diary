@@ -81,8 +81,6 @@ def journal_entries_date(year, month, day):
     if not user:
         return abort(401, description="Invalid user")
 
-    # sql_query = text(f"SELECT * FROM  journal WHERE DATE(journal_date) = '{year}-{month}-{day}' and client_id_fk='{user.id}';")
-    # result = db.engine.execute(sql_query)
     result = Journal.date_filter(year, month, day, user.id)
     result_as_list = result.fetchall()
 
