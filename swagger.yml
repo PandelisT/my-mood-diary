@@ -13,6 +13,10 @@ tags:
     description: Routes available for "My Journal" page
   - name: user
     description: Routes for clients and psychologists
+  - name: client
+    description: Routes for updating client information
+  - name: profile
+    description: Routes for profile image
 paths:
   /journal:
     get:
@@ -31,6 +35,16 @@ paths:
           '200':
            description: Success
       description: Adds a journal entry to the database
+      
+  /journal/recent:
+    get:
+      tags:
+        - My Journal
+      summary: Searches for latest journal entries
+      responses:
+          '200':
+            description: Success
+      description: Search for a specific journal entry.
 
   /journal/findByDate:
     get:
@@ -115,6 +129,117 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Journal entry not found
+  
+  /client:
+    get:
+      tags:
+        - client
+      summary: Logs user into the system
+      operationId: getClientDetails
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: firstname
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+    post:
+      tags:
+        - client
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createClient
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+        description: Created user object
+        required: true
+    put:
+      tags:
+        - client
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateClient
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+        description: Updated user object
+        required: true
+
+  '/profile/{user_id}/image':
+    get:
+      tags:
+        - profile
+      summary: Logs user into the system
+      operationId: getProfileImage
+      parameters:
+        - name: user_id
+          in: path
+          description: The user_id connected to the image
+          required: true
+          schema:
+            type: string
+        - name: firstname
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+    post:
+      tags:
+        - profile
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createProfileImage
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        description: Created user object
+        required: true
+    put:
+      tags:
+        - profile
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateProfileImage
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        description: Updated user object
+        required: true
+
+  
+  
   /user:
     post:
       tags:
@@ -183,46 +308,13 @@ paths:
       responses:
         default:
           description: successful operation
-  '/user/{username}':
-    get:
-      tags:
-        - user
-      summary: Get user by user name
-      operationId: getUserByName
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be fetched. Use user1 for testing.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid username supplied
-        '404':
-          description: User not found
+  /user/:
     put:
       tags:
         - user
       summary: Updated user
       description: This can only be done by the logged in user.
       operationId: updateUser
-      parameters:
-        - name: username
-          in: path
-          description: name that need to be updated
-          required: true
-          schema:
-            type: string
       responses:
         '400':
           description: Invalid user supplied
@@ -241,21 +333,29 @@ paths:
       summary: Delete user
       description: This can only be done by the logged in user.
       operationId: deleteUser
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be deleted
-          required: true
-          schema:
-            type: string
       responses:
         '400':
           description: Invalid username supplied
         '404':
           description: User not found
+          
+
 components:
   schemas:
     User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+        password:
+          type: string
+      xml:
+        name: User
+
+    Client:
       type: object
       properties:
         id:
@@ -267,18 +367,19 @@ components:
           type: string
         lastName:
           type: string
-        email:
-          type: string
-        password:
-          type: string
-        phone:
-          type: string
-        userStatus:
-          type: integer
-          format: int32
-          description: User Status
       xml:
-        name: User
+        name: Client
+        
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        filename:
+          type: string
+      xml:
+        name: Client
 servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
