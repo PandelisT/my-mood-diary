@@ -18,5 +18,10 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run tests
+        env:
+          FLASK_ENV: development
+          AWS_ACCESS_KEY_ID: 1
+          AWS_SECRET_ACCESS_KEY: 1
+          AWS_S3_BUCKET: 1
         run: |
           cd src && python -m unittest discover tests/
