@@ -16,7 +16,7 @@ class TestJournal(unittest.TestCase):
         db.create_all()
 
         runner = cls.app.test_cli_runner()
-        runner.invoke(args=["db", "seed"])
+        runner.invoke(args=["db-custom", "seed"])
         print("setup ran")
 
     @classmethod
