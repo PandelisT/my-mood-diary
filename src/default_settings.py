@@ -50,11 +50,18 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
 
+
+class WorkflowConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+
 environment = os.getenv("FLASK_ENV")
 
 if environment == "production":
     app_config = ProductionConfig()
 elif environment == "testing":
     app_config = TestingConfig()
+elif environment == "workflow":
+    app_config = WorkflowConfig()
 else:
     app_config = DevelopmentConfig()
