@@ -34,7 +34,6 @@ class TestAuth(unittest.TestCase):
         })
         self.assertEqual(response.status_code, 200)
 
-        
         # data = response.get_json()
 
         # response = self.client.post("/auth/login", 
