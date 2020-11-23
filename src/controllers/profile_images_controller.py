@@ -46,22 +46,23 @@ def profile_image_create(user_id):
 @jwt_required
 def profile_image_show(user_id):
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
 
-    profile_image = ProfileImage.query.filter_by(id=user_id).first()
+    print(user.id)
+
+    profile_image = ProfileImage.query.filter_by(client_id=user.id).first()
+
+    print(profile_image)
 
     if not profile_image:
         return abort(401, description="Invalid profile image")
+    
     bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
 
     filename = profile_image.filename
-    print("****************************")
-    print(filename)
-    file_obj = bucket.Object("profile_images/<User test3@test.com>.JPG").get()
-
-    print(file_obj)
+    file_obj = bucket.Object(f"profile_images/{filename}").get()
 
     return Response(
         file_obj["Body"].read(),
@@ -69,21 +70,25 @@ def profile_image_show(user_id):
         headers={"Content-Disposition": "attachment;filename=image"}
     )
 
-# @profile_images.route("/<int:id>", methods=["DELETE"])
-# @jwt_required
-# @verify_user
-# def profile_image_delete(book_id, id, user=None):
-#     profile = Profile.query.filter_by(id=profile_id, user_id=user.id).first()
+@profile_images.route("/", methods=["DELETE"])
+@jwt_required
+def profile_image_delete(user_id):
+    user_id = get_jwt_identity()
+    user = Client.query.get(user_id)
+    if not user:
+        return abort(401, description="Invalid user")
 
-#     if not profile:
-#         return abort(401, description="Invalid user")
-#     if profile.profile_image:
-#         bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
-#         filename = profile.profile_image.filename
+    profile = ProfileImage.query.filter_by(client_id=user.id).first()
 
-#         bucket.Object(f"profile_images/{filename}").delete()
+    if not profile:
+        return abort(401, description="Invalid user")
 
-#         db.session.delete(user.user_image)
-#         db.session.commit()
+    bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
+    filename = profile.filename
 
-#     return ("", 204)
+    bucket.Object(f"profile_images/{filename}").delete()
+
+    db.session.delete(profile)
+    db.session.commit()
+
+    return ("", 204)
