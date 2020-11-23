@@ -1,4 +1,5 @@
 from main import db
+from models.Client import Client
 
 class ProfileImage(db.Model):
     __tablename__ = "profile_images"

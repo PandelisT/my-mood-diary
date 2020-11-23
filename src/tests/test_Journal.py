@@ -1,18 +1,9 @@
-  
 import unittest
 from main import create_app, db
-from schemas.UserSchema import user_schema
-from models.User import User
-from models.Client import Client
 from models.Journal import Journal
-from flask import Blueprint, request, jsonify, abort
+from models.Client import Client
+from models.User import User
 from flask_jwt_extended import create_access_token
-from controllers.journals_controller import journal
-from controllers.auth_controller import auth
-from controllers.profile_images_controller import profile_images
-from controllers.client_controller import clients
-
-
 import random
 
 class TestJournal(unittest.TestCase):
@@ -36,29 +27,26 @@ class TestJournal(unittest.TestCase):
         print("teardown ran")
 
     def test_journal_index(self):
-        # journal_entry = random.choice(Journal.query.all())
-        # user = User.query.get(journal_entry.client_id_fk)
-        # access_token = create_access_token(identity=str(user.id))
+        journal_entry = random.choice(Journal.query.all())
+        print(journal_entry)
+        user = User.query.get(journal_entry.client_id_fk)
+        print(user)
+        access_token = create_access_token(identity=str(user.id))
+        print(access_token)
 
-        # response = self.client.get("/journal/", headers={ "Authorization": f"Bearer {access_token}"})
-        # data = response.get_json()
-        # user_fields = user_schema.load(request.json)
-        # user_fields["email"] = "test1@test.com"
-        # user_fields["password"] = "123456"
-        # user = User.query.filter_by(email=user_fields["email"]).first()
+        response = self.client.get("/journal/", headers={ "Authorization": f"Bearer {access_token}"})
+        data = response.get_json()
 
-        # expiry = timedelta(days=1)
-        # access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(data, list)
 
-        # header = jsonify({'Content-Type': 'application/json', 'Token': access_token})
+    def test_journal_post(self):
+        user = random.choice(User.query.all())
+        print(user)
+        access_token = create_access_token(identity=str(user.id))
+        print(access_token)
+        response = self.client.post("/journal/", json={"journal_entry": "test entry"}, headers={ "Authorization": f"Bearer {access_token}"})
+        data = response.get_json()
 
-        # response = self.client.get("/login/", headers=header)
-
-        # journals = Journal.query.filter_by(client_id_fk=user.id).all()
-
-        # data = response.get_json()
-        # print(data)
-
-        # self.assertEqual(response.status_code, 200)
-        # self.assertIsInstance(data, list)
-        pass
+        self.assertEqual(response.status_code, 200)
+    
