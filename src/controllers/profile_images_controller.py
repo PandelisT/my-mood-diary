@@ -39,6 +39,7 @@ def profile_image_create(user_id):
     new_image = ProfileImage()
     new_image.filename = filename
     new_image.client_id = user.id
+    print(new_image)
     user.profile_image.append(new_image)
     db.session.commit()
 
