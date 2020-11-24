@@ -1,4 +1,6 @@
 from main import db, ma
+from schemas.UserSchema import UserSchema
+from models.Client import Client
 from models.ProfileImage import ProfileImage
 from marshmallow.validate import Length
 

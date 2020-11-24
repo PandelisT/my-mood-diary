@@ -1,6 +1,4 @@
 from main import db
-from models.User import User
-from models.Client import Client
 from datetime import datetime 
 from sqlalchemy import text
 

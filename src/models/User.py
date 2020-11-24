@@ -1,5 +1,8 @@
+
 from main import db
-from sqlalchemy.orm import backref
+
+from models.Client import Client
+
 
 class User(db.Model):
     __tablename__ = "users"
@@ -7,8 +10,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    # client_id = db.relationship("Client", backref="users", uselist=False)
-    client_id = db.relationship("Client", backref=backref("users", uselist=False))
+
+    client_id = db.relationship(Client, backref="user", uselist=False)
 
     def __repr__(self):
         return f"<User {self.email}>"

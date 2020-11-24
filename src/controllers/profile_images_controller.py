@@ -1,8 +1,11 @@
 from flask import Blueprint, request, abort, current_app, Response
 from flask_jwt_extended import jwt_required
-from models.ProfileImage import ProfileImage
+from schemas.JournalSchema import journals_schema, journal_schema
+from schemas.ClientSchema import clients_schema, client_schema
+from schemas.ProfileImageSchema import profile_image_schema
 from models.User import User
 from models.Client import Client
+from models.ProfileImage import ProfileImage
 import boto3
 from main import db
 from pathlib import Path

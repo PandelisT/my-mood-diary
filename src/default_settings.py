@@ -50,10 +50,6 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
 
-    # @property
-    # def SQLALCHEMY_DATABASE_URI(self):
-    #     return os.getenv("DB_TEST_URI")
-
 class WorkflowConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
