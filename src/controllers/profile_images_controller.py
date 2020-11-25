@@ -1,9 +1,5 @@
 from flask import Blueprint, request, abort, current_app, Response
 from flask_jwt_extended import jwt_required
-from schemas.JournalSchema import journals_schema, journal_schema
-from schemas.ClientSchema import clients_schema, client_schema
-from schemas.ProfileImageSchema import profile_image_schema
-from models.User import User
 from models.Client import Client
 from models.ProfileImage import ProfileImage
 import boto3
@@ -22,7 +18,7 @@ def profile_image_create(user_id):
     user = Client.query.get(user_id)
     if not user:
         return abort(401, description="Invalid user")
-    
+
     if "image" not in request.files:
         return  abort(400, description="No Image")
     image = request.files["image"]
@@ -62,7 +58,7 @@ def profile_image_show(user_id):
 
     if not profile_image:
         return abort(401, description="Invalid profile image")
-    
+
     bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
 
     filename = profile_image.filename
@@ -73,6 +69,7 @@ def profile_image_show(user_id):
         mimetype="image/*",
         headers={"Content-Disposition": "attachment;filename=image"}
     )
+
 
 @profile_images.route("/", methods=["DELETE"])
 @jwt_required
