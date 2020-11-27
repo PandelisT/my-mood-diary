@@ -10,48 +10,53 @@ It also allows users to add a daily journal entry and send a report to their the
 
 REST API end points can be found here: https://app.swaggerhub.com/apis/nerdypan/my-mood-diary/1.0.0 
 
+The MVP (minimum viable product) for this application is the user authentication end points, client profile details including profile picture and add, updating, deleting and retrieving journal entries for the logged in user.
+
 ## Wireframes
 
+The MVP includes the Login page, sign up page, profile page and the My Journal page below:
 ### Login page
 
 ![login page](docs/Login_page_wireframe.png)
 
-Sign up page
+### Sign up page
 
 ![Sign up page](docs/Sign_up_page_wireframe.png)
 
-Profile page
+### Profile page
 
 ![Profile page](docs/Profile_wireframe.png)
 
-How are you feeling? and Emotions
+### My Journal
+
+https://material-ui.com/components/pickers/#datepickers
+
+![My Journal](docs/Journal_wireframe.png)
+
+Version 2 of this application will include:
+### How are you feeling? and Emotions
 
 ![How are you feeling?](docs/How_are_you_feeling_Emotions_wireframe.png)
 https://material-ui.com/components/slider/#discrete-sliders
 
 
-Actions
+### Actions
 
 ![Actions](docs/Actions_wireframe.png)
 
-My Journal
-https://material-ui.com/components/pickers/#datepickers
-
-![My Journal](docs/Journal_wireframe.png)
-
-Problem Areas
+### Problem Areas
 
 ![Problem Areas](docs/Problem_areas_wireframe.png)
 
-Tracker Log
+### Tracker Log
 
 ![Tracker Log](docs/tracker_log_wireframe.png)
 
-Skills
+### Skills
 
 ![Skills](docs/Skills_wireframe.png)
 
-Calendar
+### Calendar
 
 ![Calendar](docs/Calendar_wireframe.png).
 
