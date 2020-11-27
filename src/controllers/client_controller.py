@@ -70,9 +70,9 @@ def client_details_update():
     detail_fields = client_schema.load(request.json)
     details.update(detail_fields)
     db.session.commit()
-    return jsonify(journal_schema.dump(details[0]))
+    return jsonify(detail_fields)
 
-
+# jsonify(journal_schema.dump(details[0]))
 # @clients.route("/", methods=["DELETE"])
 # @jwt_required
 # def cleint_details_delete(id):
