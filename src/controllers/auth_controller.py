@@ -34,5 +34,8 @@ def auth_login():
 
     expiry = timedelta(days=1)
     access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
+    # set the access cookies in the browser that sent the request
+    # resp = jsonify({'login': True})
+    # set_access_cookies(resp, access_token)
 
     return jsonify({ "token": access_token })

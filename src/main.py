@@ -20,6 +20,11 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_object("default_settings.app_config")
+    # # Configure application to store JWTs in cookies
+    # app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+    # app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
+    # app.config['JWT_REFRESH_COOKIE_PATH'] = '/token/refresh'
+    # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
     # register db and marshmallow on app
     db.init_app(app)
